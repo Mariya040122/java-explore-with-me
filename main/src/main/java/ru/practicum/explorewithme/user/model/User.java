@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "users",
         uniqueConstraints = {@UniqueConstraint(columnNames = "email")}
 )
-public class User{
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
