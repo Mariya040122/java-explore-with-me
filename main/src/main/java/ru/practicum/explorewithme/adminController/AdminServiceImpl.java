@@ -3,7 +3,6 @@ package ru.practicum.explorewithme.adminController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.explorewithme.OffsetPageRequest;
 import ru.practicum.explorewithme.State;
 import ru.practicum.explorewithme.category.CategoryMapper;
@@ -60,8 +59,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<EventFullDto> eventSearch(Long[] users, State[] states, Long[] categories,
                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
-        List<Event> foundEvents = eventRepository.findAdminEvents(users, states, categories, rangeStart, rangeEnd
-                , new OffsetPageRequest(from, size, Sort.unsorted())).getContent();
+        List<Event> foundEvents = eventRepository.findAdminEvents(users, states, categories, rangeStart, rangeEnd,
+                new OffsetPageRequest(from, size, Sort.unsorted())).getContent();
         return foundEvents.stream()
                 .map(EventMapper::toEventFullDto)
                 .collect(Collectors.toList());

@@ -29,13 +29,13 @@ public interface AdminService {
     EventFullDto rejectEvent(long eventId);
 
 
-    CategoryDto editCategory(CategoryDto сategoryDto);
+    CategoryDto editCategory(CategoryDto categoryDto);
 
 
     CategoryDto createCategory(NewCategoryDto newCategory);
 
 
-    void deleteCategory(long сategoryId);
+    void deleteCategory(long categoryId);
 
 
     List<UserDto> usersSearch(Long[] users, int from, int size);
@@ -50,18 +50,18 @@ public interface AdminService {
     CompilationDto createCompilation(NewCompilationDto newCompilation);
 
 
-    void deleteCompilation(long сompilationId);
+    void deleteCompilation(long compilationId);
 
 
-    void deleteEventInCompilation(long сompilationId, long eventId);
+    void deleteEventInCompilation(long compilationId, long eventId);
 
 
-    void addEventToCompilation(long сompilationId, long eventId);
+    void addEventToCompilation(long compilationId, long eventId);
 
 
-    void unpinCompilation(long сompilationId);
+    void unpinCompilation(long compilationId);
 
 
-    void pinCompilation(long сompilationId);
+    void pinCompilation(long compilationId);
 
 }

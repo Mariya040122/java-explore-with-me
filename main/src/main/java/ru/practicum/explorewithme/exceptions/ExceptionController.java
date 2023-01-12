@@ -17,6 +17,7 @@ public class ExceptionController {
                 HttpStatus.NOT_FOUND, LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiError> handleSQLException(ConstraintViolationException e) {
         ApiError response = new ApiError(null, e.getMessage(), e.toString(),
