@@ -7,7 +7,7 @@
 		<artifactId>explore-with-me</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>ru.practicum</groupId>
+
 	<artifactId>stat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>stat</name>

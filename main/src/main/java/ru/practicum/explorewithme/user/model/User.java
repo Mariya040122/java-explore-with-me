@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Getter
 @Setter
@@ -14,7 +13,7 @@ import java.io.Serializable;
 @Table(name = "users",
         uniqueConstraints = {@UniqueConstraint(columnNames = "email")}
 )
-public class User implements Serializable {
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

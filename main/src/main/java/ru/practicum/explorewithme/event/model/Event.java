@@ -8,7 +8,6 @@ import ru.practicum.explorewithme.request.model.Request;
 import ru.practicum.explorewithme.user.model.User;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "events")
-public class Event implements Serializable {
+public class Event {
 
     @Column(name = "annotation", nullable = false)
     String annotation; // краткое описание
