@@ -9,13 +9,15 @@ import ru.practicum.explorewithme.request.RequestStatus;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParticipationRequestDto {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     LocalDateTime created; //Дата и время создания заявки
     Long event; //Идентификатор события
     Long id; // Идентификатор заявки

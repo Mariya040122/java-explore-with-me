@@ -18,11 +18,13 @@ import ru.practicum.explorewithme.event.model.Event;
 import ru.practicum.explorewithme.request.RequestRepository;
 import ru.practicum.explorewithme.user.UserRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class PublicServiceImpl implements PublicService {
     @Autowired
     private final UserRepository userRepository;

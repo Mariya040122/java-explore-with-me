@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,6 +20,6 @@ public class EndpointHit {
     String app; //Идентификатор сервиса для которого записывается информация
     String uri; //URI для которого был осуществлен запрос
     String ip; //IP-адрес пользователя, осуществившего запрос
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     LocalDateTime timestamp; //Дата и время, когда был совершен запрос к эндпоинту
 }

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 
 @Slf4j
 @RestController
@@ -43,9 +45,9 @@ public class PublicController {
                                              @RequestParam(name = "categories", required = false) Long[] categories,
                                              @RequestParam(name = "paid", required = false) Boolean paid,
                                              @RequestParam(name = "rangeStart", required = false)
-                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                             @DateTimeFormat(pattern = DT_PATTERN) LocalDateTime rangeStart,
                                              @RequestParam(name = "rangeEnd", required = false)
-                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                             @DateTimeFormat(pattern = DT_PATTERN) LocalDateTime rangeEnd,
                                              @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                              @RequestParam(name = "sort", required = false) SortEventEnum sort,
                                              @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero int from,

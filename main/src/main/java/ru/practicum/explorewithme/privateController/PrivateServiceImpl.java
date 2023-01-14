@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.privateController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.OffsetPageRequest;
 import ru.practicum.explorewithme.category.model.Category;
 import ru.practicum.explorewithme.compilation.CompilationRepository;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import static ru.practicum.explorewithme.State.*;
 
 @Service
+@Transactional(readOnly = true)
 public class PrivateServiceImpl implements PrivateService {
 
     @Autowired
@@ -64,6 +66,7 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateEvent(long userId, UpdateEventRequest updateEvent) {
         Event event = eventRepository.findById(updateEvent.getEventId()).orElseThrow();
         if (event.getInitiator().getId() != userId) {
@@ -100,6 +103,7 @@ public class PrivateServiceImpl implements PrivateService {
 
 
     @Override
+    @Transactional
     public EventFullDto addEvent(long userId, NewEventDto newEvent) {
         User user = userRepository.findById(userId).orElseThrow();
         Category category = categoryRepository.findById(newEvent.getCategory()).orElseThrow();
@@ -120,6 +124,7 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
+    @Transactional
     public EventFullDto cancellationEventByUser(long userId, long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (event.getInitiator().getId() == userId) {
@@ -143,6 +148,7 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto confirmRequest(long userId, long eventId, long reqId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (event.getState() != PUBLISHED) throw new RuntimeException();
@@ -166,6 +172,7 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto rejectRequest(long userId, long eventId, long reqId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (event.getState() != PUBLISHED) throw new RuntimeException();
@@ -185,6 +192,7 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto createRequest(long userId, long eventId) {
         User user = userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
@@ -204,6 +212,7 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto cancelRequest(long userId, long requestId) {
         Request request = requestRepository.findById(requestId).orElseThrow();
         if (request.getRequester().getId() != userId) throw new RuntimeException();

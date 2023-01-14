@@ -9,6 +9,8 @@ import ru.practicum.explorewithme.event.Location;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -18,7 +20,7 @@ public class AdminUpdateEventRequest {
     String annotation; // Новая аннотация
     Long category; // Новая категория
     String description; // Новое описание
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     LocalDateTime eventDate; // Новые дата и время на которые намечено событие.
     Location location; // Широта и долгота места проведения события
     Boolean paid; // Новое значение флага о платности мероприятия

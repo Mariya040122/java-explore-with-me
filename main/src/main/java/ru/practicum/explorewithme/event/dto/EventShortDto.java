@@ -10,6 +10,8 @@ import ru.practicum.explorewithme.user.model.User;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class EventShortDto {
     String annotation; // краткое описание
     Category category; // категория
     long confirmedRequests; //количество одобренных заявок на участие в данном событии
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     LocalDateTime eventDate; // дата и время на которые намечено событие
     private Long id; //индивидуальный номер события
     User initiator; // пользователь (краткая информация)

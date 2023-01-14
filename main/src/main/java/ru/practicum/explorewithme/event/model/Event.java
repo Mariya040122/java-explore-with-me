@@ -11,6 +11,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 @Getter
 @Setter
 @ToString
@@ -25,14 +27,14 @@ public class Event {
     @ManyToOne(fetch = FetchType.EAGER)
     Category category; // категория
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     @Column(name = "createdon", nullable = false)
     LocalDateTime createdOn; //дата и время создания события
 
     @Column(name = "description", nullable = false)
     String description; //полное описание события
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     @Column(name = "eventdate", nullable = false)
     LocalDateTime eventDate; // дата и время на которые намечено событие
 
@@ -57,7 +59,7 @@ public class Event {
     @Column(name = "participantlimit")
     Integer participantLimit; //ограничение на количество участников. Значение 0 - означает отсутствие ограничения
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     @Column(name = "publishedon", nullable = true)
     LocalDateTime publishedOn; // дата и время публикации события
 

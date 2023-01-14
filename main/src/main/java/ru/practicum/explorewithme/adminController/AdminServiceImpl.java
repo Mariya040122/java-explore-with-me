@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.adminController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.OffsetPageRequest;
 import ru.practicum.explorewithme.State;
 import ru.practicum.explorewithme.category.CategoryMapper;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
@@ -67,6 +69,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public EventFullDto editEvent(long eventId, AdminUpdateEventRequest updateEventRequest) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (updateEventRequest.getAnnotation() != null) {
@@ -101,6 +104,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public EventFullDto publishEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (event.getState() != State.PENDING) throw new RuntimeException();
@@ -113,6 +117,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public EventFullDto rejectEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (event.getState() != State.PENDING) throw new RuntimeException();
@@ -121,6 +126,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public CategoryDto editCategory(CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryDto.getId()).orElseThrow();
         category.setName(categoryDto.getName());
@@ -128,12 +134,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public CategoryDto createCategory(NewCategoryDto newCategory) {
         Category category = new Category(0L, newCategory.getName());
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
 
     @Override
+    @Transactional
     public void deleteCategory(long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
@@ -153,17 +161,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public UserDto createUser(NewUserRequest newUser) {
         User user = UserMapper.fromNewUserRequest(newUser);
         return UserMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
+    @Transactional
     public void deleteUser(long userId) {
         userRepository.deleteById(userId);
     }
 
     @Override
+    @Transactional
     public CompilationDto createCompilation(NewCompilationDto newCompilation) {
         Compilation compilation = CompilationMapper.fromNewCompilationDto(newCompilation);
         List<Event> events = new ArrayList<>();
@@ -176,11 +187,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void deleteCompilation(long compilationId) {
         compilationRepository.deleteById(compilationId);
     }
 
     @Override
+    @Transactional
     public void deleteEventInCompilation(long compilationId, long eventId) {
         Compilation compilation = compilationRepository.findById(compilationId).orElseThrow();
         if (compilation.getEvents().stream()
@@ -195,6 +208,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void addEventToCompilation(long compilationId, long eventId) {
         Compilation compilation = compilationRepository.findById(compilationId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
@@ -203,6 +217,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void unpinCompilation(long compilationId) {
         Compilation compilation = compilationRepository.findById(compilationId).orElseThrow();
         compilation.setPinned(false);
@@ -210,6 +225,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void pinCompilation(long compilationId) {
         Compilation compilation = compilationRepository.findById(compilationId).orElseThrow();
         compilation.setPinned(true);

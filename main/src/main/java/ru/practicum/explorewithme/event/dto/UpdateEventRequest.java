@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.explorewithme.StartDateConstraint;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +25,7 @@ public class UpdateEventRequest {
     Long category; //Новая категория
     @Size(min = 20, max = 7000)
     String description; //Новое описание
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     @StartDateConstraint
     LocalDateTime eventDate; //Новые дата и время на которые намечено событие.
     @NotNull

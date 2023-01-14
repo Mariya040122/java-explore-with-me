@@ -12,6 +12,8 @@ import ru.practicum.explorewithme.event.Location;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class NewEventDto {
     @NotNull
     @Size(min = 20, max = 7000)
     String description; //полное описание события
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     @NotNull
     @StartDateConstraint
     LocalDateTime eventDate; // дата и время на которые намечено событие

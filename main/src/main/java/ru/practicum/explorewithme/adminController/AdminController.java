@@ -21,6 +21,8 @@ import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+
 @Slf4j
 @Validated
 @RestController
@@ -40,9 +42,9 @@ public class AdminController {
                                           @RequestParam(name = "states", required = false) State[] states,
                                           @RequestParam(name = "categories", required = false) Long[] categories,
                                           @RequestParam(name = "rangeStart", required = false)
-                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                          @DateTimeFormat(pattern = DT_PATTERN) LocalDateTime rangeStart,
                                           @RequestParam(name = "rangeEnd", required = false)
-                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                          @DateTimeFormat(pattern = DT_PATTERN) LocalDateTime rangeEnd,
                                           @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero int from,
                                           @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
         log.info("Получен запрос на поиск события");

@@ -33,7 +33,7 @@ public class StatService {
                 .build();
     }
 
-    public List<ViewStats> getStat(Map<String, Object> parameters) {
+    public List<ViewStats> findStat(Map<String, Object> parameters) {
         HttpEntity<Object> requestEntity = new HttpEntity<>(null, defaultHeaders());
 
         ResponseEntity<List<ViewStats>> statServerResponse;
@@ -71,7 +71,7 @@ public class StatService {
                 "end", java.net.URLEncoder.encode("2100-01-01 00:00:00", StandardCharsets.UTF_8),
                 "uris", uris.toArray(String[]::new)
         );
-        List<ViewStats> viewStats = getStat(parameters);
+        List<ViewStats> viewStats = findStat(parameters);
         if (viewStats == null) {
             return events;
         }

@@ -8,11 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.explorewithme.event.model.Event;
 import ru.practicum.explorewithme.user.model.User;
-
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom {
 
