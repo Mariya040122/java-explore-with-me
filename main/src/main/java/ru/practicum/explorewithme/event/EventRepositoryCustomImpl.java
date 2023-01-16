@@ -108,7 +108,7 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
         return pageResults(entityManager.createQuery(query), pageable);
     }
 
-    private Page<Event> pageResults(Query resultQuery, Pageable pageable){
+    private Page<Event> pageResults(Query resultQuery, Pageable pageable) {
         int pageNumber = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();
         resultQuery.setFirstResult(pageNumber);

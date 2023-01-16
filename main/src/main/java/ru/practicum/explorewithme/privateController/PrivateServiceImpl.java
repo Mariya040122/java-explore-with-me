@@ -190,7 +190,7 @@ public class PrivateServiceImpl implements PrivateService {
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
-    private void checkRequest (long userId, long eventId, long reqId)
+    private void checkRequest(long userId, long eventId, long reqId)
             throws NotFoundException, BadRequestException, ForbiddenException {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
         if (event.getState() != PUBLISHED) throw new BadRequestException("Статус события должен быть В ОЖИДАНИИ");

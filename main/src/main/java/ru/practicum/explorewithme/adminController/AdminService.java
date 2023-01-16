@@ -9,7 +9,6 @@ import ru.practicum.explorewithme.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.category.dto.NewCategoryDto;
 import ru.practicum.explorewithme.exceptions.BadRequestException;
-import ru.practicum.explorewithme.exceptions.NotFoundEventException;
 import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.user.dto.NewUserRequest;
 import ru.practicum.explorewithme.user.dto.UserDto;
