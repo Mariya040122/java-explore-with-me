@@ -15,10 +15,10 @@ import java.util.Set;
 @NoArgsConstructor
 public class NewCompilationDto {
 
-    Set<Long> events; //список событий входящих в подборку
-    Boolean pinned = false; //закреплена ли подборка на главной странице сайта
+    private Set<Long> events; //список событий входящих в подборку
+    private Boolean pinned = false; //закреплена ли подборка на главной странице сайта
     @NotNull
     @NotBlank
-    String title; //заголовок подборки
+    private String title; //заголовок подборки
 
 }

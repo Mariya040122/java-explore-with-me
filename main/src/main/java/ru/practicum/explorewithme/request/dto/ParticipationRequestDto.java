@@ -9,7 +9,7 @@ import ru.practicum.explorewithme.request.RequestStatus;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+import static ru.practicum.explorewithme.Constants.*;
 
 @Getter
 @Setter
@@ -17,10 +17,10 @@ import static ru.practicum.explorewithme.Constants.DT_PATTERN;
 @NoArgsConstructor
 public class ParticipationRequestDto {
 
+    private Long id; // Идентификатор заявки
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
-    LocalDateTime created; //Дата и время создания заявки
-    Long event; //Идентификатор события
-    Long id; // Идентификатор заявки
-    Long requester; // Идентификатор пользователя, отправившего заявку
-    RequestStatus status; // Статус заявки
+    private LocalDateTime created; //Дата и время создания заявки
+    private Long event; //Идентификатор события
+    private Long requester; // Идентификатор пользователя, отправившего заявку
+    private RequestStatus status; // Статус заявки
 }

@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 
 public class UserShortDto {
-    Long id; //уникальный идентификатор пользователя
-    String name; //имя или логин пользователя
+
+    private Long id; //уникальный идентификатор пользователя
+    private String name; //имя или логин пользователя
 }

@@ -18,8 +18,8 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    Long id; //индивидуальный номер категории
+    private Long id; //индивидуальный номер категории
 
     @Column(name = "name", nullable = false)
-    String name; //название категории
+    private String name; //название категории
 }

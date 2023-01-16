@@ -10,7 +10,7 @@ import ru.practicum.explorewithme.user.model.User;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+import static ru.practicum.explorewithme.Constants.*;
 
 @Getter
 @Setter
@@ -18,14 +18,14 @@ import static ru.practicum.explorewithme.Constants.DT_PATTERN;
 @NoArgsConstructor
 public class EventShortDto {
 
-    String annotation; // краткое описание
-    Category category; // категория
-    long confirmedRequests; //количество одобренных заявок на участие в данном событии
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
-    LocalDateTime eventDate; // дата и время на которые намечено событие
     private Long id; //индивидуальный номер события
-    User initiator; // пользователь (краткая информация)
-    Boolean paid; //нужно ли оплачивать участие
-    String title; //заголовок
-    long views; //количество просмотрев события
+    private String annotation; // краткое описание
+    private Category category; // категория
+    private long confirmedRequests; //количество одобренных заявок на участие в данном событии
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
+    private LocalDateTime eventDate; // дата и время на которые намечено событие
+    private User initiator; // пользователь (краткая информация)
+    private Boolean paid; //нужно ли оплачивать участие
+    private String title; //заголовок
+    private long views; //количество просмотрев события
 }

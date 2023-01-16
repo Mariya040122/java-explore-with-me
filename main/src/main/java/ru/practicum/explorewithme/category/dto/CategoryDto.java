@@ -14,8 +14,8 @@ public class CategoryDto {
 
     @Positive
     @NotNull
-    Long id; //индивидуальный номер категории
+    private Long id; //индивидуальный номер категории
     @NotNull
-    String name; //название категории
+    private String name; //название категории
 }
 

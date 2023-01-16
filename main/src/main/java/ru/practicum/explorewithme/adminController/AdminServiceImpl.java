@@ -21,6 +21,7 @@ import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.category.dto.NewCategoryDto;
 import ru.practicum.explorewithme.category.CategoryRepository;
 import ru.practicum.explorewithme.event.model.Event;
+import ru.practicum.explorewithme.exceptions.*;
 import ru.practicum.explorewithme.request.RequestRepository;
 import ru.practicum.explorewithme.user.UserMapper;
 import ru.practicum.explorewithme.user.UserRepository;
@@ -70,13 +71,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public EventFullDto editEvent(long eventId, AdminUpdateEventRequest updateEventRequest) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+    public EventFullDto editEvent(long eventId, AdminUpdateEventRequest updateEventRequest) throws NotFoundException {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
         if (updateEventRequest.getAnnotation() != null) {
             event.setAnnotation(updateEventRequest.getAnnotation());
         }
         if (updateEventRequest.getCategory() != null) {
-            event.setCategory(categoryRepository.findById(updateEventRequest.getCategory()).orElseThrow());
+            event.setCategory(categoryRepository.findById(updateEventRequest.getCategory())
+                    .orElseThrow(() -> new NotFoundCategoryException(updateEventRequest.getCategory())));
         }
         if (updateEventRequest.getDescription() != null) {
             event.setDescription(updateEventRequest.getDescription());
@@ -105,11 +107,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public EventFullDto publishEvent(long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
-        if (event.getState() != State.PENDING) throw new RuntimeException();
+    public EventFullDto publishEvent(long eventId) throws NotFoundException, BadRequestException {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
+        if (event.getState() != State.PENDING) throw new BadRequestException("Статус события должен быть В ОЖИДАНИИ");
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1L))) {
-            throw new RuntimeException();
+            throw new BadRequestException("Время начала события должно быть не ранее, " +
+                    "чем через 1 час от текущего момента");
         }
         event.setState(State.PUBLISHED);
         event.setPublishedOn(LocalDateTime.now());
@@ -118,17 +121,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public EventFullDto rejectEvent(long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
-        if (event.getState() != State.PENDING) throw new RuntimeException();
+    public EventFullDto rejectEvent(long eventId) throws NotFoundException, BadRequestException {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
+        if (event.getState() != State.PENDING) throw new BadRequestException("Статус события должен быть В ОЖИДАНИИ");;
         event.setState(State.CANCELED);
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
     @Transactional
-    public CategoryDto editCategory(CategoryDto categoryDto) {
-        Category category = categoryRepository.findById(categoryDto.getId()).orElseThrow();
+    public CategoryDto editCategory(CategoryDto categoryDto) throws NotFoundException {
+        Category category = categoryRepository.findById(categoryDto.getId())
+                .orElseThrow(() -> new NotFoundCategoryException(categoryDto.getId()));
         category.setName(categoryDto.getName());
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
@@ -194,13 +198,13 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public void deleteEventInCompilation(long compilationId, long eventId) {
+    public void deleteEventInCompilation(long compilationId, long eventId) throws NotFoundException {
         Compilation compilation = compilationRepository.findById(compilationId).orElseThrow();
         if (compilation.getEvents().stream()
                 .filter(c -> c.getId() == eventId)
                 .collect(Collectors.toList())
                 .isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundEventException(eventId);
         }
         Event event = eventRepository.findById(eventId).orElseThrow();
         event.setCompilation(null);
@@ -209,9 +213,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public void addEventToCompilation(long compilationId, long eventId) {
-        Compilation compilation = compilationRepository.findById(compilationId).orElseThrow();
-        Event event = eventRepository.findById(eventId).orElseThrow();
+    public void addEventToCompilation(long compilationId, long eventId) throws NotFoundException {
+        Compilation compilation = compilationRepository.findById(compilationId)
+                .orElseThrow(() -> new NotFoundCompilationException(compilationId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
         event.setCompilation(compilationId);
         eventRepository.save(event);
     }

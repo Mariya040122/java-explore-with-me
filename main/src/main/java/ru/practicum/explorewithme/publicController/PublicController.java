@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+import static ru.practicum.explorewithme.Constants.*;
 
 
 @Slf4j

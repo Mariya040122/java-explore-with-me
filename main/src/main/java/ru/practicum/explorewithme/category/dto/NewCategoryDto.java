@@ -16,5 +16,5 @@ public class NewCategoryDto {
 
     @NotNull
     @NotBlank
-    String name; //название категории
+    private String name; //название категории
 }

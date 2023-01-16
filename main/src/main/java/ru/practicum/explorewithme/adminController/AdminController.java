@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.adminController;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +13,7 @@ import ru.practicum.explorewithme.category.dto.CategoryDto;
 import ru.practicum.explorewithme.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.category.dto.NewCategoryDto;
+import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.user.dto.UserDto;
 import ru.practicum.explorewithme.user.dto.NewUserRequest;
 
@@ -21,7 +23,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+import static ru.practicum.explorewithme.Constants.*;
 
 @Slf4j
 @Validated
@@ -51,6 +53,7 @@ public class AdminController {
         return adminService.eventSearch(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
+    @SneakyThrows
     @PutMapping("/events/{eventId}")
     public EventFullDto editEvent(@PathVariable long eventId,
                                   @RequestBody AdminUpdateEventRequest updateEventRequest) {
@@ -58,18 +61,21 @@ public class AdminController {
         return adminService.editEvent(eventId, updateEventRequest);
     }
 
+    @SneakyThrows
     @PatchMapping("/events/{eventId}/publish")
     public EventFullDto publishEvent(@PathVariable long eventId) {
         log.info("Получен запрос на публикацию события");
         return adminService.publishEvent(eventId);
     }
 
+    @SneakyThrows
     @PatchMapping("/events/{eventId}/reject")
     public EventFullDto rejectEvent(@PathVariable long eventId) {
         log.info("Получен запрос на отклонение события");
         return adminService.rejectEvent(eventId);
     }
 
+    @SneakyThrows
     @PatchMapping("/categories")
     public CategoryDto editCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Получен запрос изменение категории");
@@ -120,6 +126,7 @@ public class AdminController {
         adminService.deleteCompilation(compId);
     }
 
+    @SneakyThrows
     @DeleteMapping("/compilations/{compId}/events/{eventId}")
     public void deleteEventInCompilation(@PathVariable long compId,
                                          @PathVariable long eventId) {
@@ -127,6 +134,7 @@ public class AdminController {
         adminService.deleteEventInCompilation(compId, eventId);
     }
 
+    @SneakyThrows
     @PatchMapping("/compilations/{compId}/events/{eventId}")
     public void addEventToCompilation(@PathVariable long compId,
                                       @PathVariable long eventId) {

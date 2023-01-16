@@ -14,18 +14,19 @@ import java.util.List;
 @Table(name = "compilations")
 public class Compilation {
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "compilation")
-    List<Event> events = new ArrayList<>(); //список событий входящих в подборку
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    Long id; //идентификатор
+    private Long id; //идентификатор
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "compilation")
+    private List<Event> events = new ArrayList<>(); //список событий входящих в подборку
+
 
     @Column(name = "pinned", nullable = false)
-    Boolean pinned; //закреплена ли подборка на главной странице сайта
+    private Boolean pinned; //закреплена ли подборка на главной странице сайта
 
     @Column(name = "title", nullable = false)
-    String title; //заголовок подборки
+    private String title; //заголовок подборки
 }

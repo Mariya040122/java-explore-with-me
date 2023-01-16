@@ -15,10 +15,15 @@ import ru.practicum.explorewithme.category.dto.CategoryDto;
 import ru.practicum.explorewithme.event.SortEventEnum;
 import ru.practicum.explorewithme.category.CategoryRepository;
 import ru.practicum.explorewithme.event.model.Event;
+import ru.practicum.explorewithme.exceptions.NotFoundCategoryException;
+import ru.practicum.explorewithme.exceptions.NotFoundCompilationException;
+import ru.practicum.explorewithme.exceptions.NotFoundEventException;
+import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.request.RequestRepository;
 import ru.practicum.explorewithme.user.UserRepository;
 
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,8 +61,8 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public Event findEvent(long eventId) {
-        return eventRepository.findById(eventId).orElseThrow();
+    public Event findEvent(long eventId) throws NotFoundException {
+        return eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
     }
 
     @Override
@@ -70,8 +75,9 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public CompilationDto findCompilation(long compId) {
-        Compilation compilation = compilationRepository.findById(compId).orElseThrow();
+    public CompilationDto findCompilation(long compId) throws NotFoundException {
+        Compilation compilation = compilationRepository.findById(compId)
+                .orElseThrow(() -> new NotFoundCompilationException(compId));
         return CompilationMapper.toCompilationDto(compilation);
     }
 
@@ -85,8 +91,8 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public CategoryDto findCategory(long catId) {
-        Category category = categoryRepository.findById(catId).orElseThrow();
+    public CategoryDto findCategory(long catId) throws NotFoundException {
+        Category category = categoryRepository.findById(catId).orElseThrow(() -> new NotFoundCategoryException(catId));
         return CategoryMapper.toCategoryDto(category);
     }
 }

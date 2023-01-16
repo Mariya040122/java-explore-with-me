@@ -12,7 +12,7 @@ import ru.practicum.explorewithme.event.Location;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
-import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+import static ru.practicum.explorewithme.Constants.*;
 
 @Getter
 @Setter
@@ -22,24 +22,24 @@ public class NewEventDto {
 
     @NotNull
     @Size(min = 20, max = 2000)
-    String annotation; // краткое описание
+    private String annotation; // краткое описание
     @NotNull
     @Positive
-    Long category; // категория
+    private Long category; // категория
     @NotNull
     @Size(min = 20, max = 7000)
-    String description; //полное описание события
+    private String description; //полное описание события
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
     @NotNull
     @StartDateConstraint
-    LocalDateTime eventDate; // дата и время на которые намечено событие
+    private LocalDateTime eventDate; // дата и время на которые намечено событие
     @NotNull
-    Location location; //широта и долгота места проведения события
-    Boolean paid = false; //нужно ли оплачивать участие
-    Integer participantLimit = 0; //ограничение на количество участников. Значение 0 - означает отсутствие ограничения
-    Boolean requestModeration = true; //нужна ли пре-модерация заявок на участие
+    private Location location; //широта и долгота места проведения события
+    private Boolean paid = false; //нужно ли оплачивать участие
+    private Integer participantLimit = 0; //ограничение на количество участников. Значение 0 - означает отсутствие ограничения
+    private Boolean requestModeration = true; //нужна ли пре-модерация заявок на участие
     @NotNull
     @Size(min = 3, max = 120)
-    String title; //заголовок
+    private String title; //заголовок
 
 }

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.explorewithme.StartDateConstraint;
 
-import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+import static ru.practicum.explorewithme.Constants.*;
 
 
 @AllArgsConstructor
@@ -19,21 +19,21 @@ import static ru.practicum.explorewithme.Constants.DT_PATTERN;
 @Setter
 public class UpdateEventRequest {
 
-    @Size(min = 20, max = 2000)
-    String annotation; //Новая аннотация
-    @Positive
-    Long category; //Новая категория
-    @Size(min = 20, max = 7000)
-    String description; //Новое описание
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
-    @StartDateConstraint
-    LocalDateTime eventDate; //Новые дата и время на которые намечено событие.
     @NotNull
     @Positive
-    Long eventId; ////Событие
-    Boolean paid; // Новое значение флага о платности мероприятия
+    private Long eventId; ////Событие
+    @Size(min = 20, max = 2000)
+    private String annotation; //Новая аннотация
+    @Positive
+    private Long category; //Новая категория
+    @Size(min = 20, max = 7000)
+    private String description; //Новое описание
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
+    @StartDateConstraint
+    private LocalDateTime eventDate; //Новые дата и время на которые намечено событие.
+    private Boolean paid; // Новое значение флага о платности мероприятия
     @PositiveOrZero
-    Integer participantLimit; //Новый лимит пользователей
+    private Integer participantLimit; //Новый лимит пользователей
     @Size(min = 3, max = 120)
-    String title; //Новый заголовок
+    private String title; //Новый заголовок
 }

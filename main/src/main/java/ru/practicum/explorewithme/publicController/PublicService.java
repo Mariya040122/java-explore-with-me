@@ -4,6 +4,7 @@ import ru.practicum.explorewithme.category.dto.CategoryDto;
 import ru.practicum.explorewithme.compilation.dto.CompilationDto;
 import ru.practicum.explorewithme.event.SortEventEnum;
 import ru.practicum.explorewithme.event.model.Event;
+import ru.practicum.explorewithme.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,18 +17,18 @@ public interface PublicService {
                               Boolean onlyAvailable, SortEventEnum sort, int from, int size);
 
 
-    Event findEvent(long eventId);
+    Event findEvent(long eventId) throws NotFoundException;
 
 
     List<CompilationDto> findAllCompilations(boolean pinned, int from, int size);
 
 
-    CompilationDto findCompilation(long compId);
+    CompilationDto findCompilation(long compId) throws NotFoundException;
 
 
     List<CategoryDto> findAllCategories(int from, int size);
 
 
-    CategoryDto findCategory(long catId);
+    CategoryDto findCategory(long catId) throws NotFoundException;
 
 }

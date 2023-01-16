@@ -14,9 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CompilationDto {
 
-    List<EventShortDto> events; // Список событий входящих в подборку
-    Long id; //идентификатор
-    Boolean pinned; //закреплена ли подборка на главной странице сайта
-    String title; //заголовок подборки
+    private Long id; //идентификатор
+    private List<EventShortDto> events; // Список событий входящих в подборку
+    private Boolean pinned; //закреплена ли подборка на главной странице сайта
+    private String title; //заголовок подборки
 
 }

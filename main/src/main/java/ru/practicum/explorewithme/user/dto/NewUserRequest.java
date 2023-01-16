@@ -14,8 +14,8 @@ public class NewUserRequest {
 
     @NotNull
     @Email
-    String email; //почтовый адрес
+    private String email; //почтовый адрес
     @NotNull
     @NotBlank
-    String name; //имя
+    private String name; //имя
 }

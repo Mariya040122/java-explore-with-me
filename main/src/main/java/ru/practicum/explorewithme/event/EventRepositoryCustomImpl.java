@@ -73,14 +73,7 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
         query.select(event)
                 .where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 
-        Query resultQuery = entityManager.createQuery(query);
-        int pageNumber = pageable.getPageNumber();
-        int pageSize = pageable.getPageSize();
-        resultQuery.setFirstResult(pageNumber);
-        resultQuery.setMaxResults(pageSize);
-        List<Event> result = resultQuery.getResultList();
-        int size = result.size();
-        return new PageImpl<>(result, pageable, size);
+        return pageResults(entityManager.createQuery(query), pageable);
     }
 
     @Override
@@ -112,7 +105,10 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
         query.select(event)
                 .where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 
-        Query resultQuery = entityManager.createQuery(query);
+        return pageResults(entityManager.createQuery(query), pageable);
+    }
+
+    private Page<Event> pageResults(Query resultQuery, Pageable pageable){
         int pageNumber = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();
         resultQuery.setFirstResult(pageNumber);

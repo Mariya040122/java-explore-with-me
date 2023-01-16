@@ -15,6 +15,7 @@ import ru.practicum.explorewithme.event.dto.NewEventDto;
 import ru.practicum.explorewithme.category.CategoryRepository;
 import ru.practicum.explorewithme.event.model.Event;
 import ru.practicum.explorewithme.event.dto.UpdateEventRequest;
+import ru.practicum.explorewithme.exceptions.*;
 import ru.practicum.explorewithme.request.RequestMapper;
 import ru.practicum.explorewithme.request.RequestRepository;
 import ru.practicum.explorewithme.request.RequestStatus;
@@ -56,8 +57,8 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
-    public List<EventShortDto> getEventsByUser(long userId, int from, int size) {
-        User user = userRepository.findById(userId).orElseThrow();
+    public List<EventShortDto> getEventsByUser(long userId, int from, int size) throws NotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(userId));
         List<Event> events = eventRepository.findAllByInitiator(user, new OffsetPageRequest(from, size,
                 Sort.by("id").ascending())).getContent();
         return events.stream()
@@ -67,13 +68,15 @@ public class PrivateServiceImpl implements PrivateService {
 
     @Override
     @Transactional
-    public EventFullDto updateEvent(long userId, UpdateEventRequest updateEvent) {
-        Event event = eventRepository.findById(updateEvent.getEventId()).orElseThrow();
+    public EventFullDto updateEvent(long userId, UpdateEventRequest updateEvent)
+            throws NotFoundException, ForbiddenException {
+        Event event = eventRepository.findById(updateEvent.getEventId())
+                .orElseThrow(() -> new NotFoundEventException(updateEvent.getEventId()));
         if (event.getInitiator().getId() != userId) {
-            throw new RuntimeException();
+            throw new ForbiddenException("Пользователю данное действие запрещено");
         }
         if (event.getState() == PUBLISHED) {
-            throw new RuntimeException();
+            throw new ForbiddenException("Редактировать опубликованное событие запрещено");
         }
         if (updateEvent.getEventDate() != null) {
             event.setEventDate(updateEvent.getEventDate());
@@ -82,7 +85,8 @@ public class PrivateServiceImpl implements PrivateService {
             event.setAnnotation(updateEvent.getAnnotation());
         }
         if (updateEvent.getCategory() != null) {
-            Category newCategory = categoryRepository.findById(updateEvent.getCategory()).orElseThrow();
+            Category newCategory = categoryRepository.findById(updateEvent.getCategory())
+                    .orElseThrow(() -> new NotFoundCategoryException(updateEvent.getCategory()));
             event.setCategory(newCategory);
         }
         if (updateEvent.getDescription() != null) {
@@ -104,8 +108,8 @@ public class PrivateServiceImpl implements PrivateService {
 
     @Override
     @Transactional
-    public EventFullDto addEvent(long userId, NewEventDto newEvent) {
-        User user = userRepository.findById(userId).orElseThrow();
+    public EventFullDto addEvent(long userId, NewEventDto newEvent) throws NotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(userId));
         Category category = categoryRepository.findById(newEvent.getCategory()).orElseThrow();
         Event event = EventMapper.fromNewEventDto(newEvent);
         event.setInitiator(user);
@@ -116,8 +120,8 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
-    public EventFullDto getFullEventByUser(long userId, long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+    public EventFullDto getFullEventByUser(long userId, long eventId) throws NotFoundException {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
         if (event.getInitiator().getId() == userId) {
             return EventMapper.toEventFullDto(event);
         } else return null;
@@ -125,36 +129,39 @@ public class PrivateServiceImpl implements PrivateService {
 
     @Override
     @Transactional
-    public EventFullDto cancellationEventByUser(long userId, long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+    public EventFullDto cancellationEventByUser(long userId, long eventId)
+            throws NotFoundException, ForbiddenException {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
         if (event.getInitiator().getId() == userId) {
             if (event.getState() == PENDING) {
                 event.setState(CANCELED);
                 return EventMapper.toEventFullDto(eventRepository.save(event));
-            } else throw new RuntimeException();
-        } else throw new RuntimeException();
+            } else throw new ForbiddenException("Отменить можно только событие в ожидании публикации");
+        } else throw new ForbiddenException("Пользователю данное действие запрещено");
     }
 
 
     @Override
-    public List<ParticipationRequestDto> getRequestFullByUser(long userId, long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+    public List<ParticipationRequestDto> getRequestFullByUser(long userId, long eventId)
+            throws NotFoundException, ForbiddenException {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
         if (event.getInitiator().getId() == userId) {
             List<Request> requests = requestRepository.findAllByEvent(event);
             return requests.stream()
                     .map(RequestMapper::toParticipationRequestDto)
                     .collect(Collectors.toList());
-        } else throw new RuntimeException();
+        } else throw new ForbiddenException("Пользователю данное действие запрещено");
     }
 
     @Override
     @Transactional
-    public ParticipationRequestDto confirmRequest(long userId, long eventId, long reqId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
-        if (event.getState() != PUBLISHED) throw new RuntimeException();
-        if (event.getInitiator().getId() != userId) throw new RuntimeException();
-        Request request = requestRepository.findById(reqId).orElseThrow();
-        if (request.getStatus() != RequestStatus.PENDING) throw new RuntimeException();
+    public ParticipationRequestDto confirmRequest(long userId, long eventId, long reqId)
+            throws NotFoundException, BadRequestException, ForbiddenException {
+        checkRequest(userId, eventId, reqId);
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
+        Request request = requestRepository.findById(reqId).orElseThrow(() -> new NotFoundRequestException(reqId));
+        if (request.getStatus() != RequestStatus.PENDING)
+            throw new BadRequestException("Статус запроса должен быть В ОЖИДАНИИ");
         if (event.getParticipantLimit() == 0) {
             request.setStatus(RequestStatus.CONFIRMED);
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
@@ -167,25 +174,33 @@ public class PrivateServiceImpl implements PrivateService {
                     requestRepository.updateStatus(eventId, RequestStatus.PENDING, RequestStatus.REJECTED);
                 }
                 return RequestMapper.toParticipationRequestDto(request);
-            } else throw new RuntimeException();
+            } else throw new ForbiddenException("Лимит участников исчерпан");
         }
     }
 
     @Override
     @Transactional
-    public ParticipationRequestDto rejectRequest(long userId, long eventId, long reqId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
-        if (event.getState() != PUBLISHED) throw new RuntimeException();
-        if (event.getInitiator().getId() != userId) throw new RuntimeException();
-        Request request = requestRepository.findById(reqId).orElseThrow();
-        if (request.getStatus() != RequestStatus.PENDING) throw new RuntimeException();
+    public ParticipationRequestDto rejectRequest(long userId, long eventId, long reqId)
+            throws NotFoundException, BadRequestException, ForbiddenException {
+        checkRequest(userId, eventId, reqId);
+        Request request = requestRepository.findById(reqId).orElseThrow(() -> new NotFoundRequestException(reqId));
+        if (request.getStatus() != RequestStatus.PENDING)
+            throw new BadRequestException("Статус запроса должен быть В ОЖИДАНИИ");
         request.setStatus(RequestStatus.REJECTED);
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
+    private void checkRequest (long userId, long eventId, long reqId)
+            throws NotFoundException, BadRequestException, ForbiddenException {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
+        if (event.getState() != PUBLISHED) throw new BadRequestException("Статус события должен быть В ОЖИДАНИИ");
+        if (event.getInitiator().getId() != userId)
+            throw new ForbiddenException("Пользователю данное действие запрещено");
+    }
+
     @Override
-    public List<ParticipationRequestDto> getUserRequests(long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+    public List<ParticipationRequestDto> getUserRequests(long userId) throws NotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(userId));
         return requestRepository.findAllByRequester(user).stream()
                 .map(RequestMapper::toParticipationRequestDto)
                 .collect(Collectors.toList());
@@ -193,29 +208,34 @@ public class PrivateServiceImpl implements PrivateService {
 
     @Override
     @Transactional
-    public ParticipationRequestDto createRequest(long userId, long eventId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Event event = eventRepository.findById(eventId).orElseThrow();
+    public ParticipationRequestDto createRequest(long userId, long eventId)
+            throws NotFoundException, BadRequestException, ForbiddenException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
         if (event.getParticipantLimit() == requestRepository.countAllByEventAndStatus(event, RequestStatus.CONFIRMED)) {
-            throw new RuntimeException();
+            throw new ForbiddenException("Лимит участников исчерпан");
         }
-        if (event.getState() != PUBLISHED) throw new RuntimeException();
-        if (event.getInitiator().getId() == userId) throw new RuntimeException();
+        if (event.getState() != PUBLISHED) throw new BadRequestException("Статус события должен быть В ОЖИДАНИИ");
+        if (event.getInitiator().getId() == userId)
+            throw new ForbiddenException("Пользователю данное действие запрещено");
         Optional<Request> requestExist = requestRepository.findRequestByRequesterAndEvent(user, event);
-        if (requestExist.isPresent()) throw new RuntimeException();
+        if (requestExist.isPresent()) throw new BadRequestException("Запрос на участие в событии уже создан");
         RequestStatus status = RequestStatus.PENDING;
         if (!event.getRequestModeration()) {
             status = RequestStatus.CONFIRMED;
         }
-        Request request = new Request(LocalDateTime.now(), event, null, user, status);
+        Request request = new Request(null, LocalDateTime.now(), event, user, status);
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
     @Override
     @Transactional
-    public ParticipationRequestDto cancelRequest(long userId, long requestId) {
-        Request request = requestRepository.findById(requestId).orElseThrow();
-        if (request.getRequester().getId() != userId) throw new RuntimeException();
+    public ParticipationRequestDto cancelRequest(long userId, long requestId)
+            throws NotFoundException, ForbiddenException {
+        Request request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new NotFoundRequestException(requestId));
+        if (request.getRequester().getId() != userId)
+            throw new ForbiddenException("Пользователю данное действие запрещено");
         request.setStatus(RequestStatus.CANCELED);
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }

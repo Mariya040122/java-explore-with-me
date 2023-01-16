@@ -27,8 +27,8 @@ import java.math.BigInteger;
 public class Stat {
     @Id
     @GeneratedValue(generator = "sequence")
-    Long id;
-    String app;//Название сервиса
-    String uri;//URI сервиса
-    BigInteger hits;//Количество просмотров
+    private Long id;
+    private String app;//Название сервиса
+    private String uri;//URI сервиса
+    private BigInteger hits;//Количество просмотров
 }

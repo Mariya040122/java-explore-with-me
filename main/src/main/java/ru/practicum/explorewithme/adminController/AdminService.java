@@ -8,6 +8,9 @@ import ru.practicum.explorewithme.category.dto.CategoryDto;
 import ru.practicum.explorewithme.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.category.dto.NewCategoryDto;
+import ru.practicum.explorewithme.exceptions.BadRequestException;
+import ru.practicum.explorewithme.exceptions.NotFoundEventException;
+import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.user.dto.NewUserRequest;
 import ru.practicum.explorewithme.user.dto.UserDto;
 
@@ -16,20 +19,20 @@ import java.util.List;
 
 public interface AdminService {
 
-    public List<EventFullDto> eventSearch(Long[] users, State[] states, Long[] categories,
+    List<EventFullDto> eventSearch(Long[] users, State[] states, Long[] categories,
                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size);
 
 
-    EventFullDto editEvent(long eventId, AdminUpdateEventRequest updateEventRequest);
+    EventFullDto editEvent(long eventId, AdminUpdateEventRequest updateEventRequest) throws NotFoundException;
 
 
-    EventFullDto publishEvent(long eventId);
+    EventFullDto publishEvent(long eventId) throws NotFoundException, BadRequestException;
 
 
-    EventFullDto rejectEvent(long eventId);
+    EventFullDto rejectEvent(long eventId) throws NotFoundException, BadRequestException;
 
 
-    CategoryDto editCategory(CategoryDto categoryDto);
+    CategoryDto editCategory(CategoryDto categoryDto) throws NotFoundException;
 
 
     CategoryDto createCategory(NewCategoryDto newCategory);
@@ -53,10 +56,10 @@ public interface AdminService {
     void deleteCompilation(long compilationId);
 
 
-    void deleteEventInCompilation(long compilationId, long eventId);
+    void deleteEventInCompilation(long compilationId, long eventId) throws NotFoundException;
 
 
-    void addEventToCompilation(long compilationId, long eventId);
+    void addEventToCompilation(long compilationId, long eventId) throws NotFoundException;
 
 
     void unpinCompilation(long compilationId);

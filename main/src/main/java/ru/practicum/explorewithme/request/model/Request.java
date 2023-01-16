@@ -17,17 +17,18 @@ import java.time.LocalDateTime;
 @Table(name = "requests")
 public class Request {
 
-    @Column(name = "created", nullable = false)
-    LocalDateTime created;
-
-    @JoinColumn(name = "event")
-    @ManyToOne(fetch = FetchType.EAGER)
-    Event event;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    Long id;
+    private Long id;
+
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created;
+
+    @JoinColumn(name = "event")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Event event;
+
 
     @JoinColumn(name = "userid")
     @ManyToOne(fetch = FetchType.EAGER)

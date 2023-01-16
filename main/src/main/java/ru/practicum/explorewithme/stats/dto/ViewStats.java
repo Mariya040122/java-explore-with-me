@@ -10,7 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewStats {
-    String app;//Название сервиса
-    String uri;//URI сервиса
-    Long hits;//Количество просмотров
+
+    private String app;//Название сервиса
+    private String uri;//URI сервиса
+    private Long hits;//Количество просмотров
 }

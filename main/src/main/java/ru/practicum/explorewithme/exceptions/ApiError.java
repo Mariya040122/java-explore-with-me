@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.explorewithme.Constants.DT_PATTERN;
+import static ru.practicum.explorewithme.Constants.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,12 +17,13 @@ import static ru.practicum.explorewithme.Constants.DT_PATTERN;
 @Setter
 public class ApiError {
 
-    String[] errors;
-    String message;
-    String reason;
-    HttpStatus status;
+    private String[] errors;
+    private String path;
+    private String message;
+    private String reason;
+    private HttpStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DT_PATTERN)
-    LocalDateTime timestamp;
+    private LocalDateTime timestamp;
 
 
 }
