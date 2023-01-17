@@ -1,6 +1,5 @@
 package ru.practicum.explorewithme.publicController;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -61,7 +60,7 @@ public class PublicController {
         return statService.getEventsShortDto(results, sort == SortEventEnum.VIEWS);
     }
 
-    @SneakyThrows
+
     @GetMapping("/events/{eventId}")
     public EventFullDto findEvent(@PathVariable long eventId, HttpServletRequest request) {
         log.info("Получен запрос на получение информации о конкретном мероприятии");
@@ -79,7 +78,7 @@ public class PublicController {
         return publicService.findAllCompilations(pinned, from, size);
     }
 
-    @SneakyThrows
+
     @GetMapping("/compilations/{compId}")
     public CompilationDto findCompilation(@PathVariable long compId) {
         log.info("Получен запрос на получение информации о конкретной подборке");
@@ -94,7 +93,6 @@ public class PublicController {
     }
 
 
-    @SneakyThrows
     @GetMapping("/categories/{catId}")
     public CategoryDto findCategory(@PathVariable long catId) {
         log.info("Получен запрос на получение информации о конкретной категории");

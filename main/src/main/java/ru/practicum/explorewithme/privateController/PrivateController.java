@@ -1,6 +1,5 @@
 package ru.practicum.explorewithme.privateController;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ public class PrivateController {
         this.privateService = privateService;
     }
 
-    @SneakyThrows
+
     @GetMapping("/users/{userId}/events")
     public List<EventShortDto> getEventsByUser(@PathVariable long userId,
                                                @RequestParam(name = "from", defaultValue = "0")
@@ -39,7 +38,7 @@ public class PrivateController {
         return privateService.getEventsByUser(userId, from, size);
     }
 
-    @SneakyThrows
+
     @PatchMapping("/users/{userId}/events")
     public EventFullDto updateEvent(@PathVariable long userId,
                                     @RequestBody @Valid UpdateEventRequest updateEvent) {
@@ -47,7 +46,7 @@ public class PrivateController {
         return privateService.updateEvent(userId, updateEvent);
     }
 
-    @SneakyThrows
+
     @PostMapping("/users/{userId}/events")
     public EventFullDto addEvent(@PathVariable long userId,
                                  @RequestBody @Valid NewEventDto newEvent) {
@@ -55,7 +54,7 @@ public class PrivateController {
         return privateService.addEvent(userId, newEvent);
     }
 
-    @SneakyThrows
+
     @GetMapping("/users/{userId}/events/{eventId}")
     public EventFullDto getFullEventByUser(@PathVariable long userId,
                                            @PathVariable long eventId) {
@@ -63,7 +62,7 @@ public class PrivateController {
         return privateService.getFullEventByUser(userId, eventId);
     }
 
-    @SneakyThrows
+
     @PatchMapping("/users/{userId}/events/{eventId}")
     public EventFullDto cancellationEventByUser(@PathVariable long userId,
                                                 @PathVariable long eventId) {
@@ -71,7 +70,7 @@ public class PrivateController {
         return privateService.cancellationEventByUser(userId, eventId);
     }
 
-    @SneakyThrows
+
     @GetMapping("/users/{userId}/events/{eventId}/requests")
     public List<ParticipationRequestDto> getRequestFullByUser(@PathVariable long userId,
                                                               @PathVariable long eventId) {
@@ -79,7 +78,7 @@ public class PrivateController {
         return privateService.getRequestFullByUser(userId, eventId);
     }
 
-    @SneakyThrows
+
     @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/confirm")
     public ParticipationRequestDto confirmRequest(@PathVariable long userId,
                                                   @PathVariable long eventId,
@@ -88,7 +87,7 @@ public class PrivateController {
         return privateService.confirmRequest(userId, eventId, reqId);
     }
 
-    @SneakyThrows
+
     @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/reject")
     public ParticipationRequestDto rejectRequest(@PathVariable long userId,
                                                  @PathVariable long eventId,
@@ -97,14 +96,14 @@ public class PrivateController {
         return privateService.rejectRequest(userId, eventId, reqId);
     }
 
-    @SneakyThrows
+
     @GetMapping("/users/{userId}/requests")
     public List<ParticipationRequestDto> getUserRequests(@PathVariable long userId) {
         log.info("Получен запрос на получение информации о заявках текущего пользователя на участие в чужих событиях");
         return privateService.getUserRequests(userId);
     }
 
-    @SneakyThrows
+
     @PostMapping("/users/{userId}/requests")
     public ParticipationRequestDto createRequest(@PathVariable long userId,
                                                  @RequestParam(name = "eventId", required = true)
@@ -113,7 +112,7 @@ public class PrivateController {
         return privateService.createRequest(userId, eventId);
     }
 
-    @SneakyThrows
+
     @PatchMapping("/users/{userId}/requests/{requestId}/cancel")
     public ParticipationRequestDto cancelRequest(@PathVariable long userId,
                                                  @PathVariable long requestId) {
