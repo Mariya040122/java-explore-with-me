@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS public.comments;
 DROP TABLE IF EXISTS public.requests;
 DROP TABLE IF EXISTS public.events;
 DROP TABLE IF EXISTS public.compilations;
@@ -60,6 +61,17 @@ CREATE TABLE public.requests(
     CONSTRAINT requests_pk PRIMARY KEY (id)
 );
 
+CREATE TABLE public.comments(
+    id          int8                        NOT NULL GENERATED ALWAYS AS IDENTITY,
+    text        varchar                     NOT NULL,
+    event       int8                        NOT NULL,
+    userid      int8                        NOT NULL,
+    postedon    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    deleted     bool                        NOT NULL,
+
+    CONSTRAINT comments_pk PRIMARY KEY (id)
+);
+
 ALTER TABLE public.events
     ADD CONSTRAINT events_fk FOREIGN KEY (initiator) REFERENCES users (id);
 ALTER TABLE public.events
@@ -71,3 +83,8 @@ ALTER TABLE public.requests
     ADD CONSTRAINT requests_fk FOREIGN KEY (userid) REFERENCES users (id);
 ALTER TABLE public.requests
     ADD CONSTRAINT requests_fk_1 FOREIGN KEY (event) REFERENCES events (id);
+
+ALTER TABLE public.comments
+    ADD CONSTRAINT comments_fk FOREIGN KEY (userid) REFERENCES users (id);
+ALTER TABLE public.comments
+    ADD CONSTRAINT comments_fk_1 FOREIGN KEY (event) REFERENCES events (id);

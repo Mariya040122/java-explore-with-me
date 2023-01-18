@@ -2,6 +2,7 @@ package ru.practicum.explorewithme.adminController;
 
 
 import ru.practicum.explorewithme.State;
+import ru.practicum.explorewithme.comment.dto.FullCommentDto;
 import ru.practicum.explorewithme.compilation.dto.CompilationDto;
 import ru.practicum.explorewithme.compilation.dto.NewCompilationDto;
 import ru.practicum.explorewithme.category.dto.CategoryDto;
@@ -66,4 +67,8 @@ public interface AdminService {
 
     void pinCompilation(long compilationId);
 
+    void deleteComment(long commentId);
+
+    List<FullCommentDto> searchComments(String text, Long[] users, Long[] events,
+                                        boolean includeDeleted, int from, int size);
 }

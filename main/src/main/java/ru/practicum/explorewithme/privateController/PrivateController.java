@@ -3,6 +3,8 @@ package ru.practicum.explorewithme.privateController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explorewithme.comment.dto.CommentDto;
+import ru.practicum.explorewithme.comment.dto.NewCommentDto;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.event.dto.EventShortDto;
 import ru.practicum.explorewithme.event.dto.NewEventDto;
@@ -120,4 +122,39 @@ public class PrivateController {
         return privateService.cancelRequest(userId, requestId);
     }
 
+    @PostMapping("/users/{userId}/events/{eventId}/comments")
+    public CommentDto postComment(@PathVariable long userId,
+                                  @PathVariable long eventId,
+                                  @RequestBody @Valid NewCommentDto newComment) {
+        log.info("Получен запрос на добавление комментария");
+        return privateService.postComment(userId, eventId, newComment);
+    }
+
+    @GetMapping("/users/{userId}/events/{eventId}/comments")
+    public List<CommentDto> getCommentsByEvent(@PathVariable long userId,
+                                               @PathVariable long eventId,
+                                               @RequestParam(name = "from", defaultValue = "0")
+                                                   @PositiveOrZero int from,
+                                               @RequestParam(name = "size", defaultValue = "10")
+                                                   @Positive int size) {
+        log.info("Получен запрос на получение комментариев по событию");
+        return privateService.getCommentsByEvent(userId, eventId, from, size);
+    }
+
+    @GetMapping("/users/{userId}/comments")
+    public List<CommentDto> getCommentsByUser(@PathVariable long userId,
+                                              @RequestParam(name = "from", defaultValue = "0")
+                                                  @PositiveOrZero int from,
+                                              @RequestParam(name = "size", defaultValue = "10")
+                                                  @Positive int size) {
+        log.info("Получен запрос на получение комментариев пользователя");
+        return privateService.getCommentsByUser(userId, from, size);
+    }
+
+    @DeleteMapping("/users/{userId}/comments/{commentId}")
+    public void deleteComment(@PathVariable long userId,
+                                  @PathVariable long commentId) {
+        log.info("Получен запрос на удаление комментария пользователя");
+        privateService.deleteComment(userId, commentId);
+    }
 }

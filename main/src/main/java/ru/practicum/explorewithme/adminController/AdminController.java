@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.State;
+import ru.practicum.explorewithme.comment.dto.FullCommentDto;
 import ru.practicum.explorewithme.compilation.dto.CompilationDto;
 import ru.practicum.explorewithme.compilation.dto.NewCompilationDto;
 import ru.practicum.explorewithme.category.dto.CategoryDto;
@@ -152,5 +153,23 @@ public class AdminController {
         adminService.pinCompilation(compId);
     }
 
+    @GetMapping("/comments")
+    public List<FullCommentDto> searchComments(@RequestParam(name = "text", required = false) String text,
+                                               @RequestParam(name = "users", required = false) Long[] users,
+                                               @RequestParam(name = "events", required = false) Long[] events,
+                                               @RequestParam(name = "all", defaultValue = "false")
+                                                    boolean includeDeleted,
+                                               @RequestParam(name = "from", defaultValue = "0")
+                                                    @PositiveOrZero int from,
+                                               @RequestParam(name = "size", defaultValue = "10")
+                                                    @Positive int size) {
+        log.info("Получен запрос на поиск в комментариях");
+        return adminService.searchComments(text, users, events, includeDeleted, from, size);
+    }
 
+    @DeleteMapping("/comments/{commentId}")
+    public void deleteCommentByAdmin(@PathVariable long commentId) {
+        log.info("Получен запрос на удаление комментария пользователя администратором");
+        adminService.deleteComment(commentId);
+    }
 }
