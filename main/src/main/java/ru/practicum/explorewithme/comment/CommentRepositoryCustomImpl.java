@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.explorewithme.comment.model.Comment;
-import ru.practicum.explorewithme.event.model.Event;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,7 +29,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
             Expression<String> textLiteral = cb.literal("%" + text + "%");
             predicates.add(
                     cb.like(cb.lower(comment.get("text")), cb.lower(textLiteral))
-                    );
+            );
         }
         if (users != null) {
             Expression<Long> userIds = comment.get("userId");

@@ -29,7 +29,6 @@ import ru.practicum.explorewithme.request.model.Request;
 import ru.practicum.explorewithme.user.UserRepository;
 import ru.practicum.explorewithme.user.model.User;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

@@ -9,7 +9,7 @@ import ru.practicum.explorewithme.user.UserMapper;
 
 public class CommentMapper {
 
-    public static CommentDto toCommentDto(Comment comment){
+    public static CommentDto toCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
@@ -19,13 +19,13 @@ public class CommentMapper {
         return commentDto;
     }
 
-    public static Comment fromNewCommentDto(NewCommentDto newCommentDto){
+    public static Comment fromNewCommentDto(NewCommentDto newCommentDto) {
         Comment comment = new Comment();
         comment.setText(newCommentDto.getText());
         return comment;
     }
 
-    public static FullCommentDto toFullCommentDto(Comment comment){
+    public static FullCommentDto toFullCommentDto(Comment comment) {
         FullCommentDto commentDto = new FullCommentDto();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
