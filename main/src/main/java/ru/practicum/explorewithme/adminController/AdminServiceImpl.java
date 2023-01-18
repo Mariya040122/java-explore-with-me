@@ -8,6 +8,9 @@ import ru.practicum.explorewithme.OffsetPageRequest;
 import ru.practicum.explorewithme.State;
 import ru.practicum.explorewithme.category.CategoryMapper;
 import ru.practicum.explorewithme.category.model.Category;
+import ru.practicum.explorewithme.comment.CommentMapper;
+import ru.practicum.explorewithme.comment.CommentRepository;
+import ru.practicum.explorewithme.comment.dto.FullCommentDto;
 import ru.practicum.explorewithme.compilation.CompilationMapper;
 import ru.practicum.explorewithme.compilation.CompilationRepository;
 import ru.practicum.explorewithme.compilation.dto.CompilationDto;
@@ -45,18 +48,21 @@ public class AdminServiceImpl implements AdminService {
     private final CompilationRepository compilationRepository;
     private final RequestRepository requestRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
 
 
     public AdminServiceImpl(UserRepository userRepository,
                             EventRepository eventRepository,
                             CompilationRepository compilationRepository,
                             RequestRepository requestRepository,
-                            CategoryRepository categoryRepository) {
+                            CategoryRepository categoryRepository,
+                            CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.compilationRepository = compilationRepository;
         this.requestRepository = requestRepository;
         this.categoryRepository = categoryRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -235,5 +241,20 @@ public class AdminServiceImpl implements AdminService {
         Compilation compilation = compilationRepository.findById(compilationId).orElseThrow();
         compilation.setPinned(true);
         compilationRepository.save(compilation);
+    }
+
+    @Override
+    public List<FullCommentDto> searchComments(String text, Long[] users, Long[] events,
+                                        boolean includeDeleted, int from, int size) {
+        return commentRepository.findComments(text, users, events,includeDeleted,
+                new OffsetPageRequest(from, size, Sort.unsorted())).getContent().stream()
+                .map(CommentMapper::toFullCommentDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(long commentId) {
+        commentRepository.deleteById(commentId);
     }
 }

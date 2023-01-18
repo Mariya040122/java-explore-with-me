@@ -6,6 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.OffsetPageRequest;
 import ru.practicum.explorewithme.category.model.Category;
+import ru.practicum.explorewithme.comment.CommentMapper;
+import ru.practicum.explorewithme.comment.CommentRepository;
+import ru.practicum.explorewithme.comment.dto.CommentDto;
+import ru.practicum.explorewithme.comment.dto.NewCommentDto;
+import ru.practicum.explorewithme.comment.model.Comment;
 import ru.practicum.explorewithme.compilation.CompilationRepository;
 import ru.practicum.explorewithme.event.EventMapper;
 import ru.practicum.explorewithme.event.EventRepository;
@@ -24,6 +29,7 @@ import ru.practicum.explorewithme.request.model.Request;
 import ru.practicum.explorewithme.user.UserRepository;
 import ru.practicum.explorewithme.user.model.User;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,19 +47,21 @@ public class PrivateServiceImpl implements PrivateService {
     private final CompilationRepository compilationRepository;
     private final RequestRepository requestRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
 
 
     public PrivateServiceImpl(UserRepository userRepository,
                               EventRepository eventRepository,
                               CompilationRepository compilationRepository,
                               RequestRepository requestRepository,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.compilationRepository = compilationRepository;
         this.requestRepository = requestRepository;
         this.categoryRepository = categoryRepository;
-
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -238,5 +246,55 @@ public class PrivateServiceImpl implements PrivateService {
             throw new ForbiddenException("Пользователю данное действие запрещено");
         request.setStatus(RequestStatus.CANCELED);
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
+    }
+
+    @Override
+    @Transactional
+    public CommentDto postComment(long userId, long eventId, NewCommentDto newComment) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
+        if (event.getState() != PUBLISHED) throw new BadRequestException("Событие не опубликовано");
+        Optional<Comment> eventCommented = commentRepository.findByUserAndEventAndDeleted(user, event, false);
+        if (eventCommented.isPresent()) {
+            throw new BadRequestException("Событие уже прокомментировано пользователем");
+        }
+        Comment comment = CommentMapper.fromNewCommentDto(newComment);
+        comment.setUser(user);
+        comment.setEvent(event);
+        comment.setPostedOn(LocalDateTime.now());
+        return CommentMapper.toCommentDto(commentRepository.save(comment));
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByEvent(long userId, long eventId, int from, int size) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundEventException(eventId));
+        List<Comment> comments = commentRepository.findAllByEventAndDeleted(event, false,
+                new OffsetPageRequest(from, size, Sort.by("postedon").ascending())).getContent();
+        return comments.stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByUser(long userId, int from, int size) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(userId));
+        List<Comment> comments = commentRepository.findAllByUserAndDeleted(user, false,
+                new OffsetPageRequest(from, size, Sort.by("postedon").ascending())).getContent();
+        return comments.stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(long userId, long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundCommentException(commentId));
+        if (comment.getUser().getId() != userId) {
+            throw new BadRequestException("Операция не разрешена");
+        }
+        comment.setDeleted(true);
+        commentRepository.save(comment);
     }
 }

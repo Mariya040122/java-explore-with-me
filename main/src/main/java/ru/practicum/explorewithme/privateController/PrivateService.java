@@ -1,6 +1,8 @@
 package ru.practicum.explorewithme.privateController;
 
 
+import ru.practicum.explorewithme.comment.dto.CommentDto;
+import ru.practicum.explorewithme.comment.dto.NewCommentDto;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.event.dto.EventShortDto;
 import ru.practicum.explorewithme.event.dto.NewEventDto;
@@ -47,4 +49,12 @@ public interface PrivateService {
 
 
     ParticipationRequestDto cancelRequest(long userId, long requestId) throws NotFoundException, ForbiddenException;
+
+    CommentDto postComment(long userId, long eventId, NewCommentDto newComment);
+
+    List<CommentDto> getCommentsByEvent(long userId, long eventId, int from, int size);
+
+    List<CommentDto> getCommentsByUser(long userId, int from, int size);
+
+    void deleteComment(long userId, long commentId);
 }

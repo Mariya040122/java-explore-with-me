@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.explorewithme.State;
 import ru.practicum.explorewithme.category.model.Category;
+import ru.practicum.explorewithme.comment.model.Comment;
 import ru.practicum.explorewithme.request.model.Request;
 import ru.practicum.explorewithme.user.model.User;
 
@@ -79,6 +80,9 @@ public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
     private List<Request> requests;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
+    private List<Comment> comments;
 
     @Transient
     private Long views = 0L;
